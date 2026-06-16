@@ -1,3 +1,14 @@
+import json 
+
+with open("wiwiwi.json", "r") as f:
+    dados = json.load(f)
+
+ocorrencias = []
+for indice, ocorrencia in enumerate(dados, start=1):
+    ocorrencia_com_id = ocorrencia.copy()
+    ocorrencia_com_id["id"] = indice
+    ocorrencias.append(ocorrencia_com_id)
+
 def gerar_id(nome):
     soma = 0
 
@@ -20,6 +31,14 @@ def cadastrar_ocorrencia():
     descricao = input("Descrição: ")
     prioridade = input("Prioridade de 1 a 5: ")
 
+    ocorrencias.append({
+        "id": len(ocorrencias) + 1,
+        "nome": nome,
+        "tipo": tipo,
+        "descricao": descricao,
+        "prioridade": prioridade,
+    })
+
     print("\nOcorrência cadastrada!")
     print("ID:", id_ocorrencia)
     print("Nome:", nome)
@@ -30,12 +49,20 @@ def cadastrar_ocorrencia():
 
 def listar_ocorrencias():
     print("\nLISTAR OCORRÊNCIAS")
+    for ocorrencia in ocorrencias:
+        print("ID:", ocorrencia["id"])
+        print("Nome:", ocorrencia["nome"])
+        print("Tipo:", ocorrencia["tipo"])
+        print("Descrição:", ocorrencia["descricao"])
+        print("Prioridade:", ocorrencia["prioridade"])
+        print("-" * 20)
     print("Aqui serão listadas as ocorrências cadastradas.")
 
 
 def buscar_ocorrencia():
     print("\nBUSCAR OCORRÊNCIA")
     id_busca = input("Digite o ID para buscar: ")
+    
     print("Buscando ocorrência com ID:", id_busca)
 
 
