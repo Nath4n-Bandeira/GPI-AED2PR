@@ -18,7 +18,7 @@ def chave(texto):
     return texto.strip().casefold()
 
 
-def inserirarvore(raiz, ocorrencia):
+def inserir_arvore(raiz, ocorrencia):
     if raiz is None:
         return {
             "ocorrencia": ocorrencia,
@@ -27,14 +27,14 @@ def inserirarvore(raiz, ocorrencia):
         }
 
     if ocorrencia["id"] < raiz["ocorrencia"]["id"]:
-        raiz["esquerda"] = inserirarvore(raiz["esquerda"], ocorrencia)
+        raiz["esquerda"] = inserir_arvore(raiz["esquerda"], ocorrencia)
     elif ocorrencia["id"] > raiz["ocorrencia"]["id"]:
-        raiz["direita"] = inserirarvore(raiz["direita"], ocorrencia)
+        raiz["direita"] = inserir_arvore(raiz["direita"], ocorrencia)
 
     return raiz
 
 
-def buscararvore(raiz, idbusca):
+def buscar_arvore(raiz, idbusca):
     if raiz is None:
         return None
 
@@ -43,12 +43,12 @@ def buscararvore(raiz, idbusca):
     if idbusca == idatual:
         return raiz["ocorrencia"]
     if idbusca < idatual:
-        return buscararvore(raiz["esquerda"], idbusca)
+        return buscar_arvore(raiz["esquerda"], idbusca)
 
-    return buscararvore(raiz["direita"], idbusca)
+    return buscar_arvore(raiz["direita"], idbusca)
 
 
-def adicionarindices(ocorrencia):
+def adicionar_indices(ocorrencia):
     nome = chave(ocorrencia["nome"])
     tipo = chave(ocorrencia["tipo"])
 
@@ -67,8 +67,8 @@ def preparar(ocorrencia):
     ocorrencia["status"] = ocorrencia.get("status", "Aberto")
     ocorrencias.append(ocorrencia)
     fila.append(ocorrencia)
-    arvore = inserirarvore(arvore, ocorrencia)
-    adicionarindices(ocorrencia)
+    arvore = inserir_arvore(arvore, ocorrencia)
+    adicionar_indices(ocorrencia)
 
 
 for pos, item in enumerate(dados, start=1):
@@ -156,7 +156,7 @@ def buscar():
     return resultados
 
 
-def buscarid():
+def buscar_id():
     print("\nBUSCA POR ID")
 
     try:
@@ -165,7 +165,7 @@ def buscarid():
         print("Digite um número")
         return None
 
-    resultado = buscararvore(arvore, idbusca)
+    resultado = buscar_arvore(arvore, idbusca)
 
     if resultado is None:
         print("Ocorrência não encontrada")
@@ -176,7 +176,7 @@ def buscarid():
     return resultado
 
 
-def atenderfila():
+def atender_fila():
     print("\nATENDIMENTO POR FILA")
 
     while fila and fila[0]["status"] == "Atendido":
@@ -195,7 +195,7 @@ def atenderfila():
     return ocorrencia
 
 
-def mostrarhistorico():
+def mostrar_historico():
     print("\nHISTÓRICO")
 
     if not historico:
@@ -207,6 +207,28 @@ def mostrarhistorico():
 
     return historico
 
+def ordenar_por_prioridade():
+    print("\nORDENANDO POR PRIORIDADE")
+
+    lista = ocorrencias.copy()
+
+    for i in range(1, len(lista)):
+        atual = lista[i]
+        j = i - 1
+
+        while j >= 0 and int(lista[j]["prioridade"]) < int(atual["prioridade"]):
+            lista[j + 1] = lista[j]
+            j -= 1
+
+        lista[j + 1] = atual
+
+    print("\nOcorrências ordenadas por prioridade:")
+    for ocorrencia in lista:
+        print("-" * 20)
+        mostrar(ocorrencia)
+
+    historico.append("Ordenação manual por prioridade")
+
 
 def menu():
     while True:
@@ -217,6 +239,7 @@ def menu():
         print("4 - Buscar ocorrência por ID")
         print("5 - Atender por ordem de chegada")
         print("6 - Mostrar histórico")
+        print("7 - Ordenar por prioridade")
         print("0 - Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -228,11 +251,13 @@ def menu():
         elif opcao == "3":
             buscar()
         elif opcao == "4":
-            buscarid()
+            buscar_id()
         elif opcao == "5":
-            atenderfila()
+            atender_fila()
         elif opcao == "6":
-            mostrarhistorico()
+            mostrar_historico()
+        elif opcao == "7":
+            ordenar_por_prioridade()
         elif opcao == "0":
             print("Saindo...")
             break
@@ -242,3 +267,5 @@ def menu():
 
 if __name__ == "__main__":
     menu()
+
+
